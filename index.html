@@ -1,0 +1,1183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>E4CC – English Hiring Test (Short)</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Inter',sans-serif; background:#060d18; color:#f0f0f0; min-height:100vh; }
+
+  .header {
+    background:#1a2f4a; border-bottom:3px solid #E8541A;
+    padding:0 32px; display:flex; align-items:center; justify-content:space-between;
+    position:sticky; top:0; z-index:100; height:56px;
+  }
+  .logo-img { height:34px; object-fit:contain; }
+  .tabs { display:flex; }
+  .tab-btn {
+    padding:0 20px; height:56px; background:transparent; border:none;
+    border-bottom:3px solid transparent; color:rgba(255,255,255,.4);
+    font-size:12px; font-weight:600; font-family:'Inter',sans-serif;
+    cursor:pointer; transition:all .2s; letter-spacing:.03em; margin-bottom:-3px;
+  }
+  .tab-btn:hover { color:#fff; }
+  .tab-btn.active { color:#E8541A; border-bottom-color:#E8541A; }
+  .stage-indicator { display:flex; gap:8px; align-items:center; }
+  .stage-pip { width:8px; height:8px; border-radius:50%; background:rgba(255,255,255,.15); transition:all .3s; }
+  .stage-pip.done { background:#4ecba5; }
+  .stage-pip.active { background:#E8541A; width:22px; border-radius:4px; box-shadow:0 0 8px rgba(232,84,26,.6); }
+
+  .progress-bar { height:3px; background:#1a2f4a; }
+  .progress-fill { height:100%; background:linear-gradient(90deg,#E8541A,#ff8c5a); transition:width .4s; box-shadow:0 0 8px rgba(232,84,26,.6); }
+
+  .page { display:none; }
+  .page.active { display:block; }
+
+  .cover {
+    min-height:calc(100vh - 59px); display:flex; flex-direction:column;
+    align-items:center; justify-content:center; text-align:center; padding:40px 24px;
+    background:radial-gradient(ellipse at 70% 30%,rgba(232,84,26,.08) 0%,transparent 60%),
+               radial-gradient(ellipse at 30% 70%,rgba(30,60,120,.15) 0%,transparent 60%),#060d18;
+  }
+  .cover img { height:56px; margin-bottom:24px; }
+  .cover h1 { font-size:38px; font-weight:800; letter-spacing:-.02em; margin-bottom:8px; }
+  .cover h1 span { background:linear-gradient(90deg,#E8541A,#ff8c5a); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+  .cover p { font-size:14px; color:#7a9bbf; max-width:500px; line-height:1.7; margin-bottom:28px; }
+  .info-row { display:flex; gap:12px; flex-wrap:wrap; justify-content:center; margin-bottom:28px; }
+  .info-pill { background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.1); border-radius:20px; padding:7px 16px; font-size:12px; color:#c0d4e8; }
+  .info-pill span { color:#E8541A; font-weight:700; }
+  .form-wrap { width:100%; max-width:420px; margin-bottom:24px; display:flex; flex-direction:column; gap:16px; }
+  .form-group label { display:block; font-size:10px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:#7a9bbf; margin-bottom:6px; }
+  .form-group input, .form-group select { width:100%; padding:12px 16px; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.15); border-radius:10px; color:#fff; font-size:14px; font-family:'Inter',sans-serif; outline:none; transition:border .2s; appearance:none; }
+  .form-group input:focus, .form-group select:focus { border-color:#E8541A; }
+  .form-group select option { background:#1a2f4a; color:#fff; }
+  .other-input { display:none; margin-top:8px; }
+  .other-input.visible { display:block; }
+  .note-box { background:rgba(232,84,26,.08); border:1px solid rgba(232,84,26,.25); border-radius:10px; padding:12px 18px; font-size:12px; color:#c0d4e8; max-width:480px; line-height:1.6; margin-bottom:24px; }
+  .note-box b { color:#E8541A; }
+  .btn { background:linear-gradient(135deg,#E8541A,#c94515); color:#fff; border:none; padding:14px 36px; border-radius:30px; font-size:15px; font-weight:600; font-family:'Inter',sans-serif; cursor:pointer; transition:all .2s; box-shadow:0 0 20px rgba(232,84,26,.35); }
+  .btn:hover { background:linear-gradient(135deg,#ff6a2e,#E8541A); box-shadow:0 0 28px rgba(232,84,26,.5); }
+
+  .stage-cover { min-height:calc(100vh - 59px); display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:40px 24px; }
+  .stage-badge { font-size:48px; margin-bottom:16px; }
+  .stage-cover h2 { font-size:32px; font-weight:800; color:#fff; margin-bottom:8px; }
+  .stage-cover h2 span { background:linear-gradient(90deg,#E8541A,#ff8c5a); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+  .stage-cover p { font-size:14px; color:#7a9bbf; max-width:460px; line-height:1.7; margin-bottom:28px; }
+  .stage-meta { display:flex; gap:12px; flex-wrap:wrap; justify-content:center; margin-bottom:28px; }
+
+  .test-area { max-width:800px; margin:0 auto; padding:28px 20px 80px; }
+  .section-header { margin:32px 0 18px; padding:14px 20px; background:rgba(232,84,26,.08); border-left:4px solid #E8541A; border-radius:0 10px 10px 0; }
+  .section-tag { font-size:10px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:#E8541A; margin-bottom:3px; }
+  .section-header h2 { font-size:17px; font-weight:700; color:#fff; }
+  .section-header p { font-size:11px; color:#7a9bbf; margin-top:2px; }
+
+  .reading-passage { background:#1a2f4a; border:1px solid rgba(255,255,255,.08); border-radius:14px; padding:22px 24px; margin-bottom:18px; }
+  .reading-passage h3 { font-size:15px; font-weight:700; color:#E8541A; margin-bottom:3px; }
+  .reading-meta { font-size:11px; color:#7a9bbf; margin-bottom:14px; }
+  .reading-passage p { font-size:13px; color:#c0d4e8; line-height:1.9; margin-bottom:10px; }
+  .vocab { color:#EF9F27; border-bottom:1px dashed #EF9F27; cursor:help; position:relative; display:inline; }
+  .vocab .tooltip { display:none; position:absolute; bottom:calc(100% + 6px); left:50%; transform:translateX(-50%); background:#0f1c2e; border:1px solid #EF9F27; border-radius:8px; padding:8px 12px; font-size:11px; color:#fff; white-space:normal; z-index:50; min-width:160px; max-width:240px; line-height:1.5; text-align:left; font-style:normal; box-shadow:0 4px 20px rgba(0,0,0,.5); }
+  .vocab:hover .tooltip { display:block; }
+  .vocab-note { font-size:11px; color:#7a9bbf; font-style:italic; margin-bottom:10px; }
+
+  .video-wrap { background:#1a2f4a; border:1px solid rgba(255,255,255,.08); border-radius:14px; overflow:hidden; margin-bottom:18px; }
+  .video-header { padding:14px 20px; border-bottom:1px solid rgba(255,255,255,.06); }
+  .video-header h3 { font-size:14px; font-weight:700; color:#E8541A; margin-bottom:2px; }
+  .video-header p { font-size:11px; color:#7a9bbf; }
+
+  .q-card { background:#1a2f4a; border:1px solid rgba(255,255,255,.07); border-radius:12px; padding:18px 20px; margin-bottom:12px; transition:border .2s; }
+  .q-card.answered { border-color:rgba(232,84,26,.3); }
+  .q-num { font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#7a9bbf; margin-bottom:7px; }
+  .q-text { font-size:14px; font-weight:500; color:#fff; line-height:1.55; margin-bottom:12px; }
+  .q-text-inline { font-size:14px; font-weight:500; color:#fff; line-height:2.4; margin-bottom:4px; }
+  .q-multi-note { font-size:11px; color:#4ecba5; font-style:italic; margin-bottom:8px; }
+
+  .options { display:flex; flex-direction:column; gap:7px; }
+  .opt { display:flex; align-items:center; gap:10px; padding:9px 13px; border-radius:8px; background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.08); cursor:pointer; transition:all .15s; font-size:13px; color:#c0d4e8; }
+  .opt:hover { background:rgba(232,84,26,.1); border-color:rgba(232,84,26,.3); }
+  .opt input[type=radio] { accent-color:#E8541A; width:14px; height:14px; flex-shrink:0; }
+  .opt input[type=checkbox] { accent-color:#4ecba5; width:14px; height:14px; flex-shrink:0; }
+  .opt.selected { background:rgba(232,84,26,.12); border-color:#E8541A; color:#fff; }
+  .opt.selected-multi { background:rgba(78,203,165,.1); border-color:#4ecba5; color:#fff; }
+
+  .tf-options { display:flex; gap:8px; }
+  .tf-btn { flex:1; padding:9px; border-radius:8px; background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.08); cursor:pointer; font-size:13px; font-weight:600; color:#c0d4e8; transition:all .15s; font-family:'Inter',sans-serif; }
+  .tf-btn:hover { background:rgba(232,84,26,.1); border-color:rgba(232,84,26,.3); }
+  .tf-btn.selected-true { background:rgba(78,203,165,.15); border-color:#4ecba5; color:#4ecba5; }
+  .tf-btn.selected-false { background:rgba(232,84,26,.15); border-color:#E8541A; color:#E8541A; }
+
+  .fitb-inline { display:inline-block; background:rgba(255,255,255,.07); border:none; border-bottom:2px solid #E8541A; color:#fff; font-size:14px; font-family:'Inter',sans-serif; outline:none; padding:2px 6px; min-width:90px; text-align:center; border-radius:4px 4px 0 0; transition:background .2s; vertical-align:middle; }
+  .fitb-inline:focus { background:rgba(232,84,26,.12); }
+
+  .submit-wrap { text-align:center; margin-top:36px; }
+  .submit-wrap p { color:#7a9bbf; font-size:12px; margin-bottom:14px; }
+
+  .results-area { max-width:720px; margin:0 auto; padding:40px 20px 80px; text-align:center; }
+  .results-area img { height:48px; margin-bottom:20px; }
+  .hiring-verdict { padding:28px 32px; border-radius:16px; margin-bottom:24px; border:2px solid; position:relative; overflow:hidden; }
+  .verdict-icon { font-size:48px; margin-bottom:12px; }
+  .verdict-title { font-size:28px; font-weight:800; margin-bottom:8px; }
+  .verdict-company { font-size:14px; margin-bottom:12px; opacity:.8; }
+  .verdict-message { font-size:14px; line-height:1.7; max-width:480px; margin:0 auto; }
+  .verdict-timeline { margin-top:16px; padding:12px 20px; border-radius:10px; background:rgba(0,0,0,.2); font-size:13px; font-weight:600; }
+
+  .scores-grid { display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:12px; margin-bottom:24px; }
+  .score-card { background:#1a2f4a; border-radius:12px; padding:16px; text-align:center; border:1px solid rgba(255,255,255,.07); }
+  .score-card .score-label { font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#7a9bbf; margin-bottom:6px; }
+  .score-card .score-num { font-size:32px; font-weight:800; line-height:1; margin-bottom:4px; }
+  .score-card .score-status { font-size:10px; font-weight:600; padding:2px 8px; border-radius:10px; }
+
+  .breakdown { background:#1a2f4a; border-radius:14px; padding:20px 22px; margin:20px 0; text-align:left; }
+  .breakdown h3 { font-size:12px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#7a9bbf; margin-bottom:14px; }
+  .bd-row { display:flex; align-items:center; gap:10px; margin-bottom:9px; }
+  .bd-label { font-size:11px; color:#c0d4e8; width:190px; flex-shrink:0; }
+  .bd-bar-wrap { flex:1; background:rgba(255,255,255,.07); border-radius:4px; height:5px; }
+  .bd-bar { height:5px; border-radius:4px; }
+  .bd-score { font-size:11px; color:#7a9bbf; width:36px; text-align:right; }
+
+  .weak-areas { background:#1a2f4a; border-radius:14px; padding:20px 22px; margin:16px 0; text-align:left; }
+  .weak-areas h3 { font-size:12px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#7a9bbf; margin-bottom:14px; }
+  .weak-item { display:flex; align-items:flex-start; gap:8px; margin-bottom:10px; padding:10px 12px; background:rgba(232,84,26,.07); border:1px solid rgba(232,84,26,.18); border-radius:8px; }
+  .weak-icon { font-size:14px; flex-shrink:0; margin-top:1px; }
+  .weak-text { font-size:12px; color:#c0d4e8; line-height:1.6; }
+  .weak-text b { color:#E8541A; }
+
+  .retry-btn { margin-top:20px; background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.15); color:#fff; padding:11px 26px; border-radius:24px; font-size:13px; font-family:'Inter',sans-serif; cursor:pointer; transition:all .2s; }
+  .retry-btn:hover { background:rgba(255,255,255,.14); }
+
+  /* Review mode */
+  .review-section-header { margin:28px 0 14px; padding:12px 18px; border-radius:0 10px 10px 0; border-left:4px solid #E8541A; background:rgba(232,84,26,.08); }
+  .review-section-tag { font-size:10px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; margin-bottom:3px; }
+  .review-section-title { font-size:16px; font-weight:700; color:#fff; }
+  .review-card { border-radius:12px; padding:16px 18px; margin-bottom:10px; border:1px solid; }
+  .review-card.correct { background:rgba(78,203,165,.07); border-color:rgba(78,203,165,.3); }
+  .review-card.incorrect { background:rgba(232,84,26,.07); border-color:rgba(232,84,26,.3); }
+  .review-card .rq-header { display:flex; align-items:center; gap:8px; margin-bottom:8px; }
+  .review-card .rq-num { font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#7a9bbf; }
+  .review-card .rq-badge { font-size:11px; font-weight:700; padding:2px 10px; border-radius:10px; }
+  .badge-correct { background:rgba(78,203,165,.2); color:#4ecba5; }
+  .badge-incorrect { background:rgba(232,84,26,.2); color:#E8541A; }
+  .review-card .rq-text { font-size:14px; font-weight:500; color:#fff; line-height:1.55; margin-bottom:10px; }
+  .review-opt { display:flex; align-items:center; gap:8px; padding:7px 12px; border-radius:7px; font-size:13px; margin-bottom:5px; }
+  .review-opt.opt-correct { background:rgba(78,203,165,.12); color:#4ecba5; border:1px solid rgba(78,203,165,.3); }
+  .review-opt.opt-wrong { background:rgba(232,84,26,.1); color:#E8541A; border:1px solid rgba(232,84,26,.25); text-decoration:line-through; opacity:.8; }
+  .review-opt.opt-neutral { background:rgba(255,255,255,.03); color:#7a9bbf; border:1px solid rgba(255,255,255,.06); }
+  .review-why { margin-top:10px; padding:8px 12px; background:rgba(239,159,39,.08); border-left:3px solid #EF9F27; border-radius:0 8px 8px 0; font-size:12px; color:#c0d4e8; line-height:1.6; }
+  .review-why b { color:#EF9F27; }
+
+  /* Refresh */
+  .refresh-area { max-width:800px; margin:0 auto; padding:28px 20px 80px; }
+  .refresh-area h2 { font-size:22px; font-weight:800; color:#fff; margin-bottom:4px; }
+  .refresh-sub { font-size:12px; color:#7a9bbf; margin-bottom:24px; }
+  .refresh-card { background:#1a2f4a; border:1px solid rgba(255,255,255,.07); border-radius:12px; overflow:hidden; margin-bottom:10px; }
+  .refresh-card-header { display:flex; align-items:center; justify-content:space-between; padding:12px 16px; cursor:pointer; transition:background .15s; }
+  .refresh-card-header:hover { background:rgba(255,255,255,.03); }
+  .refresh-card-title { font-size:14px; font-weight:700; color:#fff; }
+  .refresh-card-tag { font-size:9px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; padding:2px 8px; border-radius:10px; }
+  .refresh-chevron { color:#7a9bbf; font-size:11px; transition:transform .2s; }
+  .refresh-card.open .refresh-chevron { transform:rotate(180deg); }
+  .refresh-body { display:none; padding:0 16px 16px; border-top:1px solid rgba(255,255,255,.06); }
+  .refresh-card.open .refresh-body { display:block; }
+  .refresh-row { margin-top:12px; }
+  .refresh-label { font-size:9px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:#7a9bbf; margin-bottom:4px; }
+  .refresh-value { font-size:13px; color:#c0d4e8; line-height:1.6; }
+  .refresh-example { font-size:13px; font-style:italic; line-height:1.6; }
+
+  /* Timer */
+  .timer-wrap { display:none; align-items:center; gap:8px; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.1); border-radius:20px; padding:5px 14px; }
+  .timer-wrap.visible { display:flex; }
+  .timer-label { font-size:10px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:#7a9bbf; }
+  .timer-display { font-size:15px; font-weight:700; color:#fff; font-variant-numeric:tabular-nums; min-width:48px; }
+  .timer-display.warning { color:#EF9F27; }
+  .timer-display.danger { color:#E8541A; animation:pulse 1s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;}50%{opacity:.5;} }
+
+  .timeup-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.8); z-index:999; align-items:center; justify-content:center; }
+  .timeup-overlay.visible { display:flex; }
+  .timeup-modal { background:#1a2f4a; border:2px solid #E8541A; border-radius:16px; padding:36px 40px; text-align:center; max-width:420px; }
+  .timeup-icon { font-size:40px; margin-bottom:12px; }
+  .timeup-title { font-size:22px; font-weight:800; color:#E8541A; margin-bottom:8px; }
+  .timeup-msg { font-size:14px; color:#c0d4e8; line-height:1.6; margin-bottom:24px; }
+  .timeup-btn { background:linear-gradient(135deg,#E8541A,#c94515); color:#fff; border:none; padding:12px 28px; border-radius:24px; font-size:14px; font-weight:600; font-family:'Inter',sans-serif; cursor:pointer; }
+
+  .pause-btn { position:fixed; bottom:32px; right:32px; z-index:200; width:52px; height:52px; border-radius:50%; background:linear-gradient(135deg,#1a2f4a,#0f1c2e); border:2px solid rgba(232,84,26,.5); color:#fff; font-size:20px; cursor:pointer; display:none; align-items:center; justify-content:center; box-shadow:0 4px 20px rgba(0,0,0,.4); transition:all .2s; font-family:'Inter',sans-serif; }
+  .pause-btn:hover { border-color:#E8541A; box-shadow:0 0 20px rgba(232,84,26,.4); transform:scale(1.08); }
+  .pause-btn.visible { display:flex; }
+  .pause-overlay { display:none; position:fixed; inset:0; background:rgba(6,13,24,.96); backdrop-filter:blur(8px); z-index:300; flex-direction:column; align-items:center; justify-content:center; text-align:center; }
+  .pause-overlay.visible { display:flex; }
+  .pause-overlay .pause-icon { font-size:52px; margin-bottom:16px; }
+  .pause-overlay h2 { font-size:28px; font-weight:800; color:#fff; margin-bottom:8px; }
+  .pause-overlay p { font-size:14px; color:#7a9bbf; margin-bottom:32px; max-width:360px; line-height:1.6; }
+  .resume-btn { background:linear-gradient(135deg,#E8541A,#c94515); color:#fff; border:none; padding:16px 40px; border-radius:30px; font-size:16px; font-weight:700; font-family:'Inter',sans-serif; cursor:pointer; box-shadow:0 0 24px rgba(232,84,26,.45); transition:all .2s; }
+  .resume-btn:hover { background:linear-gradient(135deg,#ff6a2e,#E8541A); }
+
+  @keyframes fadeUp { from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);} }
+  @keyframes procBounce { 0%,80%,100%{transform:scale(0);opacity:.3;}40%{transform:scale(1);opacity:1;} }
+  .proc-dot { width:12px; height:12px; border-radius:50%; background:#E8541A; animation:procBounce 1.2s infinite ease-in-out both; box-shadow:0 0 8px rgba(232,84,26,.5); }
+  .animate-in { animation:fadeUp .4s ease both; }
+  #confetti-canvas { position:fixed; inset:0; pointer-events:none; z-index:500; display:none; }
+
+  @keyframes shake { 0%,100%{transform:translateX(0);}10%,50%,90%{transform:translateX(-8px);}30%,70%{transform:translateX(8px);} }
+  @keyframes stampIn { 0%{transform:scale(3) rotate(-15deg);opacity:0;}60%{transform:scale(0.9) rotate(3deg);opacity:1;}80%{transform:scale(1.05) rotate(-1deg);}100%{transform:scale(1) rotate(0deg);opacity:1;} }
+  @keyframes iconPulse { 0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.15);opacity:.8;} }
+  .verdict-shake { animation:shake 0.6s ease both; }
+  .verdict-stamp { animation:stampIn 0.5s cubic-bezier(.36,.07,.19,.97) both; }
+  .verdict-pulse { animation:iconPulse 1.8s ease-in-out infinite; display:inline-block; }
+  @keyframes orangeGlow { 0%,100%{box-shadow:0 0 12px rgba(239,159,39,.2);}50%{box-shadow:0 0 28px rgba(239,159,39,.5),0 0 60px rgba(239,159,39,.2);} }
+  .almost-glow { animation:orangeGlow 2s ease-in-out infinite; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <img class="logo-img" src="https://i.imgur.com/9ITpXh0.png" alt="E4CC" onerror="this.style.display='none'"/>
+  <div class="tabs">
+    <button class="tab-btn active" id="tab-test" onclick="showTab('test-page',this)">📝 Test</button>
+    <button class="tab-btn" id="tab-refresh" onclick="showTab('refresh-page',this)">📖 Grammar Refresh</button>
+  </div>
+  <div class="stage-indicator">
+    <div class="stage-pip active" id="pip0"></div>
+    <div class="stage-pip" id="pip1"></div>
+    <div class="stage-pip" id="pip2"></div>
+    <div class="stage-pip" id="pip3"></div>
+  </div>
+  <div class="timer-wrap" id="timer-wrap">
+    <span class="timer-label">Time</span>
+    <span class="timer-display" id="timer-display">--:--</span>
+  </div>
+</div>
+<div class="progress-bar"><div class="progress-fill" id="progress" style="width:0%"></div></div>
+
+<canvas id="confetti-canvas"></canvas>
+<button class="pause-btn" id="pause-btn" onclick="togglePause()" title="Pause test">⏸</button>
+<div class="pause-overlay" id="pause-overlay">
+  <div class="pause-icon">⏸</div>
+  <h2>Test Paused</h2>
+  <p>Take your break! The timer is paused and your answers are saved.</p>
+  <button class="resume-btn" onclick="togglePause()">▶ &nbsp;Resume Test</button>
+</div>
+<div class="timeup-overlay" id="timeup-overlay">
+  <div class="timeup-modal">
+    <div class="timeup-icon">⏰</div>
+    <div class="timeup-title">Time's Up!</div>
+    <div class="timeup-msg" id="timeup-msg">Time is up! Moving to the next stage.</div>
+    <button class="timeup-btn" onclick="handleTimeUp()">Continue →</button>
+  </div>
+</div>
+
+<!-- TEST PAGE -->
+<div class="page active" id="test-page">
+
+  <div class="cover" id="cover">
+    <img src="https://i.imgur.com/9ITpXh0.png" alt="E4CC" onerror="this.style.display='none'"/>
+    <h1>English <span>Hiring Test</span></h1>
+    <p>Complete all four stages to get your hiring decision. This is the short version — designed to be completed in class!</p>
+    <div class="info-row">
+      <div class="info-pill">⏱ Approx. <span>50 min</span></div>
+      <div class="info-pill">📋 <span>4 Stages</span></div>
+      <div class="info-pill">🎯 Hiring Decision</div>
+    </div>
+    <div class="form-wrap">
+      <div class="form-group">
+        <label>Your Full Name</label>
+        <input type="text" id="student-name" placeholder="Write your full name here..."/>
+      </div>
+      <div class="form-group">
+        <label>Where would you like to work?</label>
+        <select id="company-select" onchange="handleCompanyChange()">
+          <option value="">-- Select a company --</option>
+          <option value="Ibex">Ibex</option>
+          <option value="Foundever">Foundever</option>
+          <option value="Inspiro">Inspiro</option>
+          <option value="Concentrix">Concentrix</option>
+          <option value="Connect International">Connect International</option>
+          <option value="Remote">Remote</option>
+          <option value="Other">Other</option>
+        </select>
+        <input type="text" id="company-other" class="other-input" placeholder="Write the company name..."/>
+      </div>
+    </div>
+    <div class="note-box">
+      <b>Important:</b> Do not use contractions in fill in the blank answers.<br>
+      ✅ Some questions have <b style="color:#4ecba5;">more than one correct answer</b> — select all that apply.<br>
+      💡 In reading sections, <span style="color:#EF9F27;border-bottom:1px dashed #EF9F27;">highlighted words</span> have definitions — hover to see them.
+    </div>
+    <button class="btn" onclick="startTest()">Start Test →</button>
+  </div>
+
+  <div class="stage-cover" id="stage1-cover" style="display:none;background:radial-gradient(ellipse at 70% 30%,rgba(232,84,26,.08) 0%,transparent 60%),#060d18;">
+    <div class="stage-badge">📝</div>
+    <h2>Stage 1 — <span>Grammar</span></h2>
+    <p>Demonstrate your knowledge of English grammar tenses and structures.</p>
+    <div class="stage-meta"><div class="info-pill">35 questions</div><div class="info-pill">Approx. <span>20 min</span></div></div>
+    <button class="btn" onclick="showGrammarTest()">Begin Stage 1 →</button>
+  </div>
+
+  <div id="grammar-test" style="display:none;">
+    <div class="test-area" id="grammar-area"></div>
+    <div style="max-width:800px;margin:0 auto;padding:0 20px 40px;text-align:center;">
+      <p style="color:#7a9bbf;font-size:12px;margin-bottom:14px;">Finished? Click below to submit Stage 1.</p>
+      <button class="btn" onclick="submitStage('grammar')">Submit Stage 1 →</button>
+    </div>
+  </div>
+
+  <div class="stage-cover" id="stage2-cover" style="display:none;background:radial-gradient(ellipse at 30% 70%,rgba(95,168,211,.08) 0%,transparent 60%),#060d18;">
+    <div class="stage-badge">📖</div>
+    <h2>Stage 2 — <span>Reading</span></h2>
+    <p>Read two passages and answer comprehension and grammar questions.</p>
+    <div class="stage-meta"><div class="info-pill">2 passages</div><div class="info-pill">Approx. <span>12 min</span></div></div>
+    <button class="btn" onclick="showReadingTest()">Begin Stage 2 →</button>
+  </div>
+
+  <div id="reading-test" style="display:none;">
+    <div class="test-area" id="reading-area"></div>
+    <div style="max-width:800px;margin:0 auto;padding:0 20px 40px;text-align:center;">
+      <p style="color:#7a9bbf;font-size:12px;margin-bottom:14px;">Finished? Click below to submit Stage 2.</p>
+      <button class="btn" onclick="submitStage('reading')">Submit Stage 2 →</button>
+    </div>
+  </div>
+
+  <div class="stage-cover" id="stage3-cover" style="display:none;background:radial-gradient(ellipse at 70% 30%,rgba(212,83,126,.08) 0%,transparent 60%),#060d18;">
+    <div class="stage-badge">📚</div>
+    <h2>Stage 3 — <span>Vocabulary</span></h2>
+    <p>Test your knowledge of professional English vocabulary.</p>
+    <div class="stage-meta"><div class="info-pill">15 questions</div><div class="info-pill">Approx. <span>8 min</span></div></div>
+    <button class="btn" onclick="showVocabTest()">Begin Stage 3 →</button>
+  </div>
+
+  <div id="vocab-test" style="display:none;">
+    <div class="test-area" id="vocab-area"></div>
+    <div style="max-width:800px;margin:0 auto;padding:0 20px 40px;text-align:center;">
+      <p style="color:#7a9bbf;font-size:12px;margin-bottom:14px;">Finished? Click below to submit Stage 3.</p>
+      <button class="btn" onclick="submitStage('vocab')">Submit Stage 3 →</button>
+    </div>
+  </div>
+
+  <div class="stage-cover" id="stage4-cover" style="display:none;background:radial-gradient(ellipse at 70% 30%,rgba(78,203,165,.08) 0%,transparent 60%),#060d18;">
+    <div class="stage-badge">🎧</div>
+    <h2>Stage 4 — <span>Listening</span></h2>
+    <p>Watch two short videos and answer comprehension questions.</p>
+    <div class="stage-meta"><div class="info-pill">2 videos</div><div class="info-pill">14 questions</div><div class="info-pill">Approx. <span>15 min</span></div></div>
+    <button class="btn" onclick="showListeningTest()">Begin Stage 4 →</button>
+  </div>
+
+  <div id="listening-test" style="display:none;">
+    <div class="test-area" id="listening-area"></div>
+    <div style="max-width:800px;margin:0 auto;padding:0 20px 40px;text-align:center;">
+      <p style="color:#7a9bbf;font-size:12px;margin-bottom:14px;">Finished? Click below to get your hiring decision.</p>
+      <button class="btn" onclick="submitStage('listening')">Get My Hiring Decision →</button>
+    </div>
+  </div>
+
+  <div id="processing-screen" style="display:none;">
+    <div style="min-height:calc(100vh - 59px);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 24px;background:radial-gradient(ellipse at 50% 50%,rgba(232,84,26,.08) 0%,transparent 60%),#060d18;">
+      <div id="processing-icon" style="font-size:56px;margin-bottom:24px;">📋</div>
+      <h2 id="processing-title" style="font-size:28px;font-weight:800;color:#fff;margin-bottom:8px;">Processing Your Application</h2>
+      <p id="processing-msg" style="font-size:14px;color:#7a9bbf;max-width:400px;line-height:1.7;margin-bottom:32px;">Please wait while we evaluate your results...</p>
+      <div style="display:flex;gap:8px;align-items:center;justify-content:center;">
+        <div class="proc-dot"></div>
+        <div class="proc-dot" style="animation-delay:.2s"></div>
+        <div class="proc-dot" style="animation-delay:.4s"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="results-area" style="display:none;">
+    <div class="results-area">
+      <img src="https://i.imgur.com/9ITpXh0.png" alt="E4CC" onerror="this.style.display='none'"/>
+      <p style="font-size:13px;color:#7a9bbf;margin-bottom:4px;" id="res-name"></p>
+      <div class="hiring-verdict animate-in" id="hiring-verdict"></div>
+      <div class="scores-grid animate-in" id="scores-grid"></div>
+      <div class="breakdown animate-in" id="breakdown"></div>
+      <div class="weak-areas animate-in" id="weak-areas"></div>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:24px;">
+        <button class="btn" onclick="showReviewMode()">🔍 Review My Test</button>
+        <button class="retry-btn" onclick="location.reload()">↩ Retake Test</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="review-area" style="display:none;">
+    <div style="max-width:800px;margin:0 auto;padding:24px 20px 80px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px;">
+        <div>
+          <h2 style="font-size:22px;font-weight:800;color:#fff;margin-bottom:4px;">Test Review</h2>
+          <p style="font-size:12px;color:#7a9bbf;">Green = correct · Red = incorrect</p>
+        </div>
+        <button class="retry-btn" onclick="backToResults()">← Back to Results</button>
+      </div>
+      <div id="review-content"></div>
+      <div style="text-align:center;margin-top:32px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+        <button class="retry-btn" onclick="backToResults()">← Back to Results</button>
+        <button class="retry-btn" onclick="location.reload()">↩ Retake Test</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- GRAMMAR REFRESH PAGE -->
+<div class="page" id="refresh-page">
+  <div class="refresh-area">
+    <h2>Grammar Refresh</h2>
+    <p class="refresh-sub">Review grammar topics before or during the test.</p>
+    <div id="refresh-grid"></div>
+  </div>
+</div>
+
+<script>
+// ── State ──────────────────────────────────────────────────────────────────
+let studentName = '', companyName = '';
+let testScrollPos = 0;
+let allAnswers = {}, multiAnswers = {};
+let grammarTotalQ = 0, readingTotalQ = 0, vocabTotalQ = 0, listeningTotalQ = 0;
+let stageScores = { grammar:0, reading:0, vocab:0, listening:0 };
+let stageTotals = { grammar:0, reading:0, vocab:0, listening:0 };
+let allErrors = { grammar:[], reading:[], vocab:[], listening:[] };
+let timerInterval = null, timerSeconds = 0, currentTimerStage = null, timeUpPending = null;
+let testStartTime = null, totalPausedMs = 0, isPaused = false, pauseStartTime = null;
+const stageDurations = { grammar:20*60, reading:12*60, vocab:8*60, listening:15*60 };
+
+// ── Tab ────────────────────────────────────────────────────────────────────
+function showTab(id, btn) {
+  const cur = document.querySelector('.page.active');
+  if (cur && cur.id === 'test-page') testScrollPos = window.scrollY;
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+  if (id === 'test-page') setTimeout(() => window.scrollTo({top:testScrollPos,behavior:'instant'}), 10);
+  else window.scrollTo({top:0,behavior:'instant'});
+}
+
+function handleCompanyChange() {
+  const sel = document.getElementById('company-select').value;
+  document.getElementById('company-other').classList.toggle('visible', sel === 'Other');
+}
+
+function startTest() {
+  studentName = document.getElementById('student-name').value.trim();
+  const sel = document.getElementById('company-select').value;
+  companyName = sel === 'Other' ? document.getElementById('company-other').value.trim() : sel;
+  if (!studentName) { alert('Please enter your full name.'); return; }
+  if (!companyName) { alert('Please select the company you want to work at.'); return; }
+  document.getElementById('cover').style.display = 'none';
+  showStageCover('stage1-cover');
+}
+
+function showStageCover(id) {
+  const el = document.getElementById(id);
+  el.style.display = 'flex';
+  el.style.flexDirection = 'column';
+  el.style.alignItems = 'center';
+  el.style.justifyContent = 'center';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ── Timer ──────────────────────────────────────────────────────────────────
+function startTimer(stage) {
+  clearInterval(timerInterval);
+  timerSeconds = stageDurations[stage];
+  currentTimerStage = stage;
+  document.getElementById('timer-wrap').classList.add('visible');
+  updateTimerDisplay();
+  timerInterval = setInterval(() => {
+    timerSeconds--;
+    updateTimerDisplay();
+    if (timerSeconds <= 0) { clearInterval(timerInterval); triggerTimeUp(stage); }
+  }, 1000);
+}
+
+function updateTimerDisplay() {
+  const mins = Math.floor(timerSeconds/60), secs = timerSeconds%60;
+  const display = document.getElementById('timer-display');
+  display.textContent = `${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
+  display.className = 'timer-display';
+  if (timerSeconds <= 60) display.classList.add('danger');
+  else if (timerSeconds <= 3*60) display.classList.add('warning');
+}
+
+function triggerTimeUp(stage) {
+  timeUpPending = stage;
+  const msgs = {
+    grammar:"Time for Stage 1 is up! Moving to Stage 2 — Reading.",
+    reading:"Time for Stage 2 is up! Moving to Stage 3 — Vocabulary.",
+    vocab:"Time for Stage 3 is up! Moving to Stage 4 — Listening.",
+    listening:"Time for Stage 4 is up! Calculating your results now."
+  };
+  document.getElementById('timeup-msg').textContent = msgs[stage];
+  document.getElementById('timeup-overlay').classList.add('visible');
+}
+
+function handleTimeUp() {
+  document.getElementById('timeup-overlay').classList.remove('visible');
+  if (timeUpPending) { submitStage(timeUpPending); timeUpPending = null; }
+}
+
+// ── Pause ──────────────────────────────────────────────────────────────────
+function togglePause() {
+  isPaused = !isPaused;
+  const overlay = document.getElementById('pause-overlay');
+  const btn = document.getElementById('pause-btn');
+  if (isPaused) {
+    clearInterval(timerInterval);
+    pauseStartTime = Date.now();
+    overlay.classList.add('visible');
+    btn.textContent = '▶';
+  } else {
+    if (pauseStartTime) totalPausedMs += Date.now() - pauseStartTime;
+    overlay.classList.remove('visible');
+    btn.textContent = '⏸';
+    timerInterval = setInterval(() => {
+      timerSeconds--;
+      updateTimerDisplay();
+      if (timerSeconds <= 0) { clearInterval(timerInterval); triggerTimeUp(currentTimerStage); }
+    }, 1000);
+  }
+}
+
+function showPauseButton() { document.getElementById('pause-btn').classList.add('visible'); }
+function hidePauseButton() {
+  document.getElementById('pause-btn').classList.remove('visible');
+  document.getElementById('pause-overlay').classList.remove('visible');
+  isPaused = false;
+}
+
+// ── Stage shows ────────────────────────────────────────────────────────────
+function showGrammarTest() {
+  document.getElementById('stage1-cover').style.display = 'none';
+  document.getElementById('grammar-test').style.display = 'block';
+  buildGrammarTest();
+  testStartTime = Date.now();
+  startTimer('grammar');
+  showPauseButton();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function showReadingTest() {
+  document.getElementById('stage2-cover').style.display = 'none';
+  document.getElementById('reading-test').style.display = 'block';
+  buildReadingTest();
+  startTimer('reading');
+  showPauseButton();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function showVocabTest() {
+  document.getElementById('stage3-cover').style.display = 'none';
+  document.getElementById('vocab-test').style.display = 'block';
+  buildVocabTest();
+  startTimer('vocab');
+  showPauseButton();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function showListeningTest() {
+  document.getElementById('stage4-cover').style.display = 'none';
+  document.getElementById('listening-test').style.display = 'block';
+  buildListeningTest();
+  startTimer('listening');
+  showPauseButton();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ── Grammar Refresh ────────────────────────────────────────────────────────
+const grammarRefresh = [
+  {title:"Simple Present",color:"#5fa8d3",formula:"Subject + base verb (he/she/it + verb<b>s</b>)",usage:"Habits, routines, and general facts",example:"She <b>STUDIES</b> English every morning."},
+  {title:"Present Progressive",color:"#5fa8d3",formula:"Subject + am/is/are + verb<b>+ing</b>",usage:"Actions happening right now or around this time",example:"He <b>IS TALKING</b> to his manager right now."},
+  {title:"Simple Past",color:"#a89de8",formula:"Subject + <b>verb in past tense</b>",usage:"Completed actions or events in the past",example:"I <b>DECIDED</b> to study English two years ago."},
+  {title:"Past Progressive",color:"#a89de8",formula:"Subject + was/were + verb<b>+ing</b>",usage:"Actions in progress at a specific moment in the past",example:"I <b>WAS WATCHING</b> a series before class."},
+  {title:"Future — Will",color:"#4ecba5",formula:"Subject + <b>will</b> + base verb",usage:"Spontaneous decisions, predictions, or promises",example:"I <b>WILL LOOK</b> for a better job soon."},
+  {title:"Future — Going to",color:"#4ecba5",formula:"Subject + am/is/are + <b>going to</b> + base verb",usage:"Plans and intentions already decided before speaking",example:"I <b>AM GOING TO PRACTICE</b> speaking every day."},
+  {title:"Present Perfect",color:"#E8541A",formula:"Subject + <b>have/has</b> + past participle",usage:"Past experiences connected to the present",example:"I <b>HAVE TRAVELED</b> to three cities."},
+  {title:"Present Perfect Progressive",color:"#E8541A",formula:"Subject + <b>have/has + been</b> + verb<b>+ing</b>",usage:"Actions that started in the past and are still happening",example:"She <b>HAS BEEN STUDYING</b> English for six months."},
+  {title:"Modal Verbs",color:"#EF9F27",formula:"Subject + <b>modal</b> (should/must/had better/could/would/might/may) + base verb",usage:"Ability, advice, obligation, possibility, or polite requests",example:"Students <b>SHOULD PRACTICE</b> speaking every day."},
+  {title:"Second Conditional",color:"#d47ab0",formula:"<b>If</b> + subject + past verb, subject + <b>would</b> + base verb",usage:"Imaginary or hypothetical situations",example:"If I <b>COULD LIVE</b> abroad, I <b>WOULD CHOOSE</b> Canada."},
+  {title:"Comparatives",color:"#5db87a",formula:"Subject + verb + adjective<b>+er</b> / <b>more</b> + adjective + <b>than</b>",usage:"Comparing two people, things, or situations",example:"Speaking is <b>HARDER THAN</b> writing."},
+  {title:"Superlatives",color:"#5db87a",formula:"Subject + verb + <b>the</b> + adjective<b>+est</b> / <b>the most</b> + adjective",usage:"The highest or lowest degree in a group",example:"Listening is <b>THE MOST DIFFICULT</b> skill for me."},
+];
+function buildRefresh() {
+  const grid = document.getElementById('refresh-grid');
+  grammarRefresh.forEach((item, i) => {
+    grid.innerHTML += `<div class="refresh-card" id="rc_${i}">
+      <div class="refresh-card-header" onclick="toggleRefresh(${i})">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span class="refresh-card-tag" style="background:rgba(${hexToRgb(item.color)},.15);color:${item.color};border:1px solid ${item.color}40">${i+1}</span>
+          <span class="refresh-card-title">${item.title}</span>
+        </div>
+        <span class="refresh-chevron">▼</span>
+      </div>
+      <div class="refresh-body">
+        <div class="refresh-row"><div class="refresh-label">Formula</div><div class="refresh-value">${item.formula}</div></div>
+        <div class="refresh-row"><div class="refresh-label">Usage</div><div class="refresh-value">${item.usage}</div></div>
+        <div class="refresh-row"><div class="refresh-label">Example</div><div class="refresh-example" style="color:${item.color}">${item.example}</div></div>
+      </div>
+    </div>`;
+  });
+}
+buildRefresh();
+function toggleRefresh(i) { document.getElementById(`rc_${i}`).classList.toggle('open'); }
+
+// ── Grammar data (35 questions, new questions) ─────────────────────────────
+const grammarSections = [
+  {title:"Simple Present",tag:"Section 1",desc:"Habits, routines, and general facts",color:"#5fa8d3",questions:[
+    {type:"mc",text:"My sister _____ English at a language school.",options:["teach","teaches","is teaching","taught"],answer:1},
+    {type:"tf",text:"True or False: 'He don't like coffee in the morning.' is grammatically correct.",answer:false},
+    {type:"fitb",text:"My parents _____ in Managua. (not / live) (Do not use contractions)",answer:["do not live"]},
+  ]},
+  {title:"Present Progressive",tag:"Section 2",desc:"Actions happening right now or around this time",color:"#5fa8d3",questions:[
+    {type:"mc",text:"Please be quiet! The baby _____.",options:["sleeps","slept","is sleeping","has slept"],answer:2},
+    {type:"tf",text:"True or False: 'They are study for their final exam right now.' is correct.",answer:false},
+    {type:"fitb",text:"She _____ a new project this week. (work on) (Do not use contractions)",answer:["is working on"]},
+  ]},
+  {title:"Simple Past",tag:"Section 3",desc:"Completed actions in the past",color:"#a89de8",questions:[
+    {type:"mc",text:"My team _____ the presentation last Friday.",options:["finish","finishes","finished","has finished"],answer:2},
+    {type:"tf",text:"True or False: 'She catched the bus on time yesterday.' is correct.",answer:false},
+    {type:"multi",text:"Which sentences are correct Simple Past sentences? (Select all that apply)",options:["We flew to Guatemala last month.","I have gone to the store yesterday.","He called the client twice this morning.","She is visit her family last week."],answers:[0,2]},
+  ]},
+  {title:"Past Progressive",tag:"Section 4",desc:"Actions in progress at a specific moment in the past",color:"#a89de8",questions:[
+    {type:"mc",text:"What _____ you _____ when the meeting started?",options:["do / do","were / doing","did / do","are / doing"],answer:1},
+    {type:"tf",text:"True or False: 'She was read a report when her phone rang.' is correct.",answer:false},
+    {type:"fitb",text:"They _____ dinner when the electricity went out. (have) (Do not use contractions)",answer:["were having"]},
+  ]},
+  {title:"Future — Will",tag:"Section 5",desc:"Predictions, spontaneous decisions, and promises",color:"#4ecba5",questions:[
+    {type:"mc",text:"Don't worry about the report. I _____ it for you.",options:["am going to do","do","will do","did"],answer:2},
+    {type:"tf",text:"True or False: 'Will' is the correct choice when reacting to new information with a spontaneous decision.",answer:true},
+    {type:"fitb",text:"I promise I _____ late to the meeting again. (not / be) (Do not use contractions)",answer:["will not be"]},
+  ]},
+  {title:"Future — Going to",tag:"Section 6",desc:"Plans and intentions decided before the moment of speaking",color:"#4ecba5",questions:[
+    {type:"mc",text:"She already bought the tickets. She _____ the concert tomorrow night.",options:["will attend","attends","is going to attend","attended"],answer:2},
+    {type:"tf",text:"True or False: 'Going to' is used when we can see evidence that something is about to happen.",answer:true},
+    {type:"multi",text:"Which sentences use 'going to' correctly? (Select all that apply)",options:["I am going to apply for a new job next week.","She going to call you later.","They are going to launch the product in March.","He is going to traveled to Spain."],answers:[0,2]},
+  ]},
+  {title:"Present Perfect",tag:"Section 7",desc:"Past experiences with a connection to the present",color:"#E8541A",questions:[
+    {type:"mc",text:"She _____ three different call centers in her career.",options:["works at","worked at","has worked at","is working at"],answer:2},
+    {type:"tf",text:"True or False: 'They have just finished the report.' is a correct Present Perfect sentence.",answer:true},
+    {type:"fitb",text:"I _____ that movie yet. (not / watch) (Do not use contractions)",answer:["have not watched"]},
+  ]},
+  {title:"Present Perfect Progressive",tag:"Section 8",desc:"Actions that started in the past and are still happening",color:"#E8541A",questions:[
+    {type:"mc",text:"He _____ on the phone with the client for over an hour.",options:["is","was","has been talking","talked"],answer:2},
+    {type:"tf",text:"True or False: 'We have been working on this project since January.' means the project is still ongoing.",answer:true},
+    {type:"fitb",text:"How long _____ you _____ English? (study) (Present Perfect Progressive — Do not use contractions)",answer:["have","been studying"]},
+  ]},
+  {title:"Modal Verbs",tag:"Section 9",desc:"Should, Must, Had better, Could, Would, Might, May",color:"#EF9F27",questions:[
+    {type:"mc",text:"You _____ forget to send that email. It is very important.",options:["should","might not","must not","could"],answer:2},
+    {type:"mc",text:"_____ you help me with this document? I am really stuck.",options:["Must","Should","Could","Had better"],answer:2},
+    {type:"tf",text:"True or False: 'She might attend the meeting' means she will definitely be there.",answer:false},
+    {type:"fitb",text:"You _____ speak to your manager about that issue. (strong recommendation) (Do not use contractions)",answer:["should","had better","must"]},
+  ]},
+  {title:"Second Conditional",tag:"Section 10",desc:"Imaginary or hypothetical situations",color:"#d47ab0",questions:[
+    {type:"mc",text:"If I _____ the manager, I _____ change the whole system.",options:["am / will","were / would","was / will","be / would"],answer:1},
+    {type:"tf",text:"True or False: 'If she had more confidence, she would apply for the promotion.' is a correct Second Conditional.",answer:true},
+    {type:"fitb",text:"What _____ you do if you _____ your job tomorrow? (lose) (Do not use contractions)",answer:["would","lost"]},
+  ]},
+  {title:"Comparatives",tag:"Section 11",desc:"Comparing two people, things, or situations",color:"#5db87a",questions:[
+    {type:"mc",text:"Working from home is _____ for some people than going to an office.",options:["more productive","the most productive","productivier","most productive"],answer:0},
+    {type:"tf",text:"True or False: 'This course is more better than the previous one.' is grammatically correct.",answer:false},
+    {type:"fitb",text:"English is _____ to learn than many people think. (easy)",answer:["easier than"]},
+  ]},
+  {title:"Superlatives",tag:"Section 12",desc:"Expressing the highest or lowest degree in a group",color:"#5db87a",questions:[
+    {type:"mc",text:"That was _____ interview I have ever had.",options:["the most nerve-wracking","more nerve-wracking","the more nerve-wracking","most nerve-wracking"],answer:0},
+    {type:"tf",text:"True or False: 'She is the most tallest person on the team.' is grammatically correct.",answer:false},
+    {type:"fitb",text:"What is _____ skill to develop for a call center job? (important)",answer:["the most important"]},
+  ]},
+];
+
+// ── Reading data (2 new passages) ──────────────────────────────────────────
+const readings = [
+  {title:"Customer Service in the Digital Age",meta:"Topic: Customer Experience & Technology · ~300 words",color:"#5fa8d3",
+    text:`<p class="vocab-note">💡 Hover over <span style="color:#EF9F27">highlighted words</span> to see definitions.</p>
+    <p>The way companies interact with their customers has changed <span class="vocab">drastically<span class="tooltip">drastically: to a very great degree; in a dramatic way</span></span> over the past decade. Digital platforms have <span class="vocab">revolutionized<span class="tooltip">revolutionized: completely changed the way something works or is done</span></span> customer service, giving people more ways than ever to reach out for support — from social media to live chat, email, and AI-powered chatbots.</p>
+    <p>However, companies are quickly learning that technology alone is not enough. Customers still <span class="vocab">crave<span class="tooltip">crave: to have a strong desire for something</span></span> human connection. A <span class="vocab">survey<span class="tooltip">survey: a study in which people are asked questions to collect information</span></span> conducted by a leading research firm found that over 70% of customers prefer to speak with a human agent when dealing with a <span class="vocab">complex<span class="tooltip">complex: consisting of many different parts; difficult to understand</span></span> issue. This shows that while automation can handle <span class="vocab">routine<span class="tooltip">routine: a regular way of doing things in a particular order</span></span> tasks efficiently, it cannot fully replace the value of human <span class="vocab">empathy<span class="tooltip">empathy: the ability to understand and share the feelings of another person</span></span>.</p>
+    <p>Companies that <span class="vocab">strike<span class="tooltip">strike: to achieve a balance between two things</span></span> the right balance between technology and human interaction are seeing the best results. Their customer <span class="vocab">retention<span class="tooltip">retention: the ability to keep customers coming back</span></span> rates are higher, and their teams feel more <span class="vocab">fulfilled<span class="tooltip">fulfilled: satisfied and happy because of doing meaningful work</span></span> in their roles. The future of customer service is not about choosing between humans and machines — it is about making them work together <span class="vocab">seamlessly<span class="tooltip">seamlessly: smoothly and without any problems or interruptions</span></span>.</p>`,
+    questions:[
+      {type:"mc",text:"According to the passage, what do most customers prefer when dealing with a complex issue?",options:["Using a chatbot","Sending an email","Speaking with a human agent","Using social media"],answer:2},
+      {type:"tf",text:"True or False: The passage says technology has completely replaced human customer service agents.",answer:false},
+      {type:"mc",text:"What does the word 'retention' mean in the context of the passage?",options:["The process of hiring new employees","The ability to keep customers coming back","A type of customer survey","A new digital platform"],answer:1},
+      {type:"fitb",text:"Companies that _____ the right balance between technology and human interaction _____ the best results. (strike / see) (Simple Present — Do not use contractions)",answer:["strike","see"]},
+      {type:"multi",text:"Which of the following are mentioned in the passage? (Select all that apply)",options:["Customers prefer human agents for complex issues","AI chatbots will completely replace humans soon","Companies with good balance have higher retention rates","Technology and humans can work together effectively"],answers:[0,2,3]},
+    ]
+  },
+  {title:"The Value of Soft Skills in the Modern Workplace",meta:"Topic: Professional Development · ~300 words",color:"#4ecba5",
+    text:`<p class="vocab-note">💡 Hover over <span style="color:#EF9F27">highlighted words</span> to see definitions.</p>
+    <p>In today's job market, having the right technical skills is no longer enough. Employers are increasingly placing <span class="vocab">emphasis<span class="tooltip">emphasis: special importance or attention given to something</span></span> on soft skills — the personal <span class="vocab">attributes<span class="tooltip">attributes: qualities or characteristics that someone has</span></span> that determine how a person interacts with others and handles their work environment.</p>
+    <p>Soft skills include things like communication, <span class="vocab">adaptability<span class="tooltip">adaptability: the ability to change or adjust to new conditions</span></span>, problem-solving, and emotional intelligence. Unlike technical skills, which can often be learned in a classroom, soft skills are developed over time through experience and self-awareness. Many recruiters now say that a candidate with strong soft skills and <span class="vocab">moderate<span class="tooltip">moderate: average in amount, intensity, or degree; not extreme</span></span> technical knowledge is often a better <span class="vocab">asset<span class="tooltip">asset: a valuable quality or skill that someone has</span></span> than a highly technical candidate who lacks interpersonal abilities.</p>
+    <p>This shift is particularly <span class="vocab">evident<span class="tooltip">evident: clearly seen or understood; obvious</span></span> in the customer service industry, where agents must constantly <span class="vocab">navigate<span class="tooltip">navigate: to find a way through a difficult situation</span></span> challenging conversations, manage their own emotions, and make quick decisions under pressure. Companies that invest in developing their employees' soft skills tend to see <span class="vocab">tangible<span class="tooltip">tangible: clear and definite; real and able to be seen or felt</span></span> improvements in customer satisfaction and team <span class="vocab">cohesion<span class="tooltip">cohesion: the situation in which people work well together as a united group</span></span>.</p>`,
+    questions:[
+      {type:"mc",text:"What does 'adaptability' mean as used in the passage?",options:["The ability to memorize technical information","The ability to change or adjust to new conditions","A type of communication skill","The process of evaluating employees"],answer:1},
+      {type:"tf",text:"True or False: According to the passage, a highly technical candidate is always a better hire than one with strong soft skills.",answer:false},
+      {type:"mc",text:"Which industry does the passage specifically mention as needing strong soft skills?",options:["Healthcare","Finance","Customer service","Engineering"],answer:2},
+      {type:"fitb",text:"Companies that _____ in developing soft skills _____ tangible improvements. (invest / see) (Simple Present — Do not use contractions)",answer:["invest","see"]},
+      {type:"multi",text:"Which soft skills are mentioned in the passage? (Select all that apply)",options:["Communication","Data analysis","Adaptability","Emotional intelligence","Technical programming"],answers:[0,2,3]},
+    ]
+  },
+];
+
+// ── Vocabulary data (15 questions) ─────────────────────────────────────────
+const vocabQuestions = [
+  // Part 1: Synonym match (4)
+  {type:"mc",text:"Choose the best synonym for <b>tell</b>.",options:["inform","confuse","ignore","delay"],answer:0,vocabType:"synonym"},
+  {type:"mc",text:"Choose the best synonym for <b>work together</b>.",options:["compete","separate","collaborate","disagree"],answer:2,vocabType:"synonym"},
+  {type:"mc",text:"Choose the best synonym for <b>ask for</b>.",options:["refuse","request","avoid","cancel"],answer:1,vocabType:"synonym"},
+  {type:"mc",text:"Choose the best synonym for <b>make sure</b>.",options:["forget","delay","question","ensure"],answer:3,vocabType:"synonym"},
+  // Part 2: Word + definition (4)
+  {type:"mc",text:"Which word means <i>'to find out information by asking questions or doing research'</i>?",options:["ignore","assume","discover","repeat"],answer:2,vocabType:"definition"},
+  {type:"mc",text:"Which word means <i>'to give something to someone officially'</i>?",options:["remove","provide","hide","question"],answer:1,vocabType:"definition"},
+  {type:"mc",text:"Which word means <i>'to start something, especially a formal process'</i>?",options:["cancel","avoid","initiate","repeat"],answer:2,vocabType:"definition"},
+  {type:"mc",text:"Which word means <i>'to think about something carefully before making a decision'</i>?",options:["rush","consider","ignore","forget"],answer:1,vocabType:"definition"},
+  // Part 3: Complete the sentence (4)
+  {type:"mc",text:"Instead of 'We need to end the meeting', say: 'We need to _____ the meeting.'",options:["conclude","cancel","forget","avoid"],answer:0,vocabType:"fitb"},
+  {type:"mc",text:"Instead of 'Please think about this option', say: 'Please _____ this option.'",options:["ignore","refuse","consider","question"],answer:2,vocabType:"fitb"},
+  {type:"mc",text:"Instead of 'I will find out the answer', say: 'I will _____ the answer.'",options:["hide","assume","lose","discover"],answer:3,vocabType:"fitb"},
+  {type:"mc",text:"Instead of 'She will start the new process', say: 'She will _____ the new process.'",options:["cancel","initiate","avoid","delay"],answer:1,vocabType:"fitb"},
+  // Part 4: Paraphrase recognition (3)
+  {type:"mc",text:"Which sentence has a similar meaning to: <i>\"He always makes sure the client is satisfied.\"</i>",options:["He always ensures the client is satisfied with the service.","He never talks to clients about their needs.","He ignores client feedback most of the time.","He prefers to work without any clients."],answer:0,vocabType:"paraphrase"},
+  {type:"mc",text:"Which sentence has a similar meaning to: <i>\"They started the project last Monday.\"</i>",options:["They cancelled the project on Monday.","They initiated the project last Monday.","They finished the project on Monday.","They avoided starting the project."],answer:1,vocabType:"paraphrase"},
+  {type:"mc",text:"Which sentence has a similar meaning to: <i>\"We need to find out what went wrong.\"</i>",options:["We need to ignore the problem completely.","We should assume everything is fine.","We need to discover what caused the issue.","We must repeat the same mistake again."],answer:2,vocabType:"paraphrase"},
+];
+
+// ── Listening data (same as long test) ────────────────────────────────────
+const listeningVideos = [
+  {title:"Video 1 — A Job Interview",desc:"Watch Philip's job interview and answer the questions below.",youtubeId:"yNxkvCY0mVU",color:"#5fa8d3",questions:[
+    {type:"tf",text:"Philip is applying for a job as an activity leader.",answer:true},
+    {type:"tf",text:"Philip worked as a teacher in a school.",answer:false},
+    {type:"tf",text:"Philip was responsible for communicating to team members.",answer:true},
+    {type:"tf",text:"Philip quit the team because he did not get enough praise and encouragement.",answer:false},
+    {type:"tf",text:"Philip worked long hours when he worked at a factory.",answer:true},
+    {type:"tf",text:"Philip thought the work at the factory was interesting.",answer:false},
+    {type:"tf",text:"Philip's co-workers at the factory helped him a lot.",answer:false},
+    {type:"tf",text:"Some of Philip's co-workers at the factory were often complaining to the boss.",answer:false},
+  ]},
+  {title:"Video 2 — Working and Travelling",desc:"Watch three people talk about their work and lifestyle, then answer the questions.",youtubeId:"dXKxR3p8fuw",color:"#4ecba5",questions:[
+    {type:"mc",text:"Which of these things is most important to Tom?",options:["The weather","The money","The work environment"],answer:0},
+    {type:"mc",text:"Which is true about Tom's work routine?",options:["He sometimes works in the evenings","He is not very organised and often works different hours","He works from different types of places"],answer:2},
+    {type:"mc",text:"Which of these words better describes Alex's job?",options:["Performer","Assistant","Bingo caller"],answer:0},
+    {type:"mc",text:"What does Alex think about his future?",options:["He does not want to work 12 hours a day forever","He would like to keep his job and have a family","He would like to quit his job and have children someday"],answer:2},
+    {type:"mc",text:"Where does Emma mainly sell her art?",options:["Popular places","Art shops","Restaurants"],answer:0},
+    {type:"mc",text:"What is most important to Emma when choosing a destination?",options:["People should understand English","It should be affordable and interesting","There should be lots of local artists"],answer:1},
+  ]},
+];
+
+// ── Build functions ────────────────────────────────────────────────────────
+function buildGrammarTest() {
+  const area = document.getElementById('grammar-area');
+  let html = '', qIdx = 0;
+  grammarSections.forEach((sec, si) => {
+    html += `<div class="section-header" style="border-left-color:${sec.color}">
+      <div class="section-tag" style="color:${sec.color}">${sec.tag} — ${sec.title}</div>
+      <p>${sec.desc}</p>
+    </div>`;
+    const shuffled = shuffleArray(sec.questions.map((q,qi)=>({q,qi})));
+    shuffled.forEach(({q,qi}) => { qIdx++; grammarTotalQ++; html += renderQ(q,`g_${si}_${qi}`,qIdx); });
+  });
+  area.innerHTML = html;
+}
+
+function buildReadingTest() {
+  const area = document.getElementById('reading-area');
+  let html = '', qIdx = 0;
+  readings.forEach((r,ri) => {
+    html += `<div class="section-header" style="border-left-color:${r.color}">
+      <div class="section-tag" style="color:${r.color}">Reading ${ri+1}</div>
+      <h2>${r.title}</h2><p>${r.meta}</p>
+    </div>
+    <div class="reading-passage"><h3>${r.title}</h3><div class="reading-meta">${r.meta}</div>${r.text}</div>`;
+    const shuffled = shuffleArray(r.questions.map((q,qi)=>({q,qi})));
+    shuffled.forEach(({q,qi}) => { qIdx++; readingTotalQ++; html += renderQ(q,`r_${ri}_${qi}`,qIdx); });
+  });
+  area.innerHTML = html;
+}
+
+function buildVocabTest() {
+  const area = document.getElementById('vocab-area');
+  let html = '', qIdx = 0;
+  const parts = [
+    {label:'Part 1 — Synonym Match',desc:'Choose the word that means the same as the highlighted word.',color:'#d47ab0',types:['synonym']},
+    {label:'Part 2 — Word & Definition',desc:'Choose the word that matches the definition given.',color:'#EF9F27',types:['definition']},
+    {label:'Part 3 — Complete the Sentence',desc:'Choose the option that best completes each sentence.',color:'#5fa8d3',types:['fitb']},
+    {label:'Part 4 — Paraphrase Recognition',desc:'Choose the sentence that has a similar meaning to the example.',color:'#4ecba5',types:['paraphrase']},
+  ];
+  parts.forEach(part => {
+    html += `<div class="section-header" style="border-left-color:${part.color}">
+      <div class="section-tag" style="color:${part.color}">Vocabulary</div>
+      <h2>${part.label}</h2><p>${part.desc}</p>
+    </div>`;
+    const shuffled = shuffleArray(vocabQuestions.map((q,qi)=>({q,qi})).filter(({q})=>part.types.includes(q.vocabType)));
+    shuffled.forEach(({q,qi}) => { qIdx++; vocabTotalQ++; html += renderQ(q,`v_${qi}`,qIdx); });
+  });
+  area.innerHTML = html;
+}
+
+function buildListeningTest() {
+  const area = document.getElementById('listening-area');
+  let html = '', qIdx = 0;
+  listeningVideos.forEach((v,vi) => {
+    html += `<div class="section-header" style="border-left-color:${v.color}">
+      <div class="section-tag" style="color:${v.color}">Listening ${vi+1}</div>
+      <h2>${v.title}</h2>
+    </div>
+    <div class="video-wrap">
+      <div class="video-header"><h3>${v.title}</h3><p>${v.desc}</p></div>
+      <div style="padding:32px 24px;text-align:center;background:rgba(0,0,0,.2);">
+        <p style="font-size:13px;color:#7a9bbf;margin-bottom:20px;">Click below to watch the video on YouTube. Come back and answer the questions when you are done.</p>
+        <a href="https://www.youtube.com/watch?v=${v.youtubeId}" target="_blank" style="display:inline-flex;align-items:center;gap:10px;background:linear-gradient(135deg,#E8541A,#c94515);color:#fff;text-decoration:none;padding:13px 28px;border-radius:30px;font-size:14px;font-weight:600;font-family:Inter,sans-serif;box-shadow:0 0 20px rgba(232,84,26,.35);">▶&nbsp; Watch on YouTube</a>
+        <p style="font-size:11px;color:#7a9bbf;margin-top:16px;">🎧 You can watch it more than once.</p>
+      </div>
+    </div>`;
+    const shuffled = shuffleArray(v.questions.map((q,qi)=>({q,qi})));
+    shuffled.forEach(({q,qi}) => { qIdx++; listeningTotalQ++; html += renderQ(q,`l_${vi}_${qi}`,qIdx); });
+  });
+  area.innerHTML = html;
+}
+
+// ── Render question ────────────────────────────────────────────────────────
+function renderQ(q, id, num) {
+  if (q.type === 'fitb') {
+    const accepted = Array.isArray(q.answer) ? q.answer : [q.answer];
+    const blanksCount = (q.text.match(/_____/g)||[]).length;
+    let blankIdx = 0;
+    let displayText = q.text
+      .replace(/\((Do not use contractions[^)]*|Present Perfect[^)]*|Past Progressive[^)]*|Second Conditional[^)]*|Present Perfect Progressive[^)]*|Simple Present[^)]*)\)/g,'<span style="font-size:11px;color:#EF9F27;font-style:italic;">($1)</span>')
+      .replace(/\(([^)]+)\)(?!<\/span>)/g,'<span style="font-size:12px;color:#4ecba5;font-weight:600;">($1)</span>')
+      .replace(/_____/g,() => {
+        const bi = blankIdx++;
+        const w = Math.max(80,(accepted[bi]&&!Array.isArray(accepted[bi])?accepted[bi].length*9:80)+20);
+        return `<input class="fitb-inline" id="fitb_${id}_${bi}" placeholder="..." oninput="recordFITBMulti('${id}',${blanksCount})" style="min-width:${w}px"/>`;
+      });
+    return `<div class="q-card" id="card_${id}"><div class="q-num">Question ${num}</div><div class="q-text-inline">${displayText}</div></div>`;
+  }
+  let html = `<div class="q-card" id="card_${id}"><div class="q-num">Question ${num}</div><div class="q-text">${q.text}</div>`;
+  if (q.type === 'mc') {
+    html += `<div class="options">`;
+    q.options.forEach((opt,oi) => { html += `<label class="opt" id="opt_${id}_${oi}" onclick="selectMC('${id}',${oi})"><input type="radio" name="${id}" value="${oi}"> ${opt}</label>`; });
+    html += `</div>`;
+  } else if (q.type === 'tf') {
+    html += `<div class="tf-options">
+      <button class="tf-btn" id="tf_${id}_true" onclick="selectTF('${id}',true)">✓ True</button>
+      <button class="tf-btn" id="tf_${id}_false" onclick="selectTF('${id}',false)">✗ False</button>
+    </div>`;
+  } else if (q.type === 'multi') {
+    html += `<div class="q-multi-note">✅ Select all correct answers.</div><div class="options">`;
+    q.options.forEach((opt,oi) => { html += `<div class="opt" id="mopt_${id}_${oi}" onclick="toggleMulti('${id}',${oi})"><input type="checkbox" id="mcheck_${id}_${oi}" onclick="event.stopPropagation()"> ${opt}</div>`; });
+    html += `</div>`;
+    if (!multiAnswers[id]) multiAnswers[id] = [];
+  }
+  html += `</div>`;
+  return html;
+}
+
+// ── Input handlers ─────────────────────────────────────────────────────────
+function selectMC(id,idx) {
+  allAnswers[id]=idx;
+  document.querySelectorAll(`[id^="opt_${id}_"]`).forEach(el=>el.classList.remove('selected'));
+  document.getElementById(`opt_${id}_${idx}`).classList.add('selected');
+  document.getElementById(`card_${id}`).classList.add('answered');
+}
+function selectTF(id,val) {
+  allAnswers[id]=val;
+  document.getElementById(`tf_${id}_true`).className='tf-btn'+(val?' selected-true':'');
+  document.getElementById(`tf_${id}_false`).className='tf-btn'+(!val?' selected-false':'');
+  document.getElementById(`card_${id}`).classList.add('answered');
+}
+function recordFITBMulti(id,blanksCount) {
+  const vals=[];
+  for(let i=0;i<blanksCount;i++){const el=document.getElementById(`fitb_${id}_${i}`);if(el)vals.push(el.value.trim().toLowerCase());}
+  allAnswers[id]=vals;
+  if(vals.some(v=>v.length>0))document.getElementById(`card_${id}`).classList.add('answered');
+}
+function toggleMulti(id,idx) {
+  if(!multiAnswers[id])multiAnswers[id]=[];
+  const i=multiAnswers[id].indexOf(idx);
+  const box=document.getElementById(`mcheck_${id}_${idx}`);
+  const lbl=document.getElementById(`mopt_${id}_${idx}`);
+  if(i===-1){multiAnswers[id].push(idx);box.checked=true;lbl.classList.add('selected-multi');}
+  else{multiAnswers[id].splice(i,1);box.checked=false;lbl.classList.remove('selected-multi');}
+  if(multiAnswers[id].length>0)document.getElementById(`card_${id}`).classList.add('answered');
+}
+
+// ── Scoring ────────────────────────────────────────────────────────────────
+function scoreQ(q,id) {
+  if(q.type==='mc'||q.type==='tf') return allAnswers[id]===q.answer;
+  if(q.type==='fitb'){
+    const accepted=Array.isArray(q.answer)?q.answer:[q.answer];
+    const userVal=allAnswers[id];
+    if(Array.isArray(userVal)){
+      let ok=true;
+      userVal.forEach((v,i)=>{
+        const raw=accepted[i];
+        const correct=Array.isArray(raw)?raw:(typeof raw==='string'?[raw]:[String(raw)]);
+        if(!correct.some(a=>(v||'').toLowerCase().trim()===String(a).toLowerCase().trim()))ok=false;
+      });
+      return ok&&userVal.length>0;
+    }
+    const userStr=(userVal||'').toLowerCase().trim();
+    return accepted.some(a=>{if(Array.isArray(a))return a.some(x=>userStr===String(x).toLowerCase().trim());return userStr===String(a).toLowerCase().trim();});
+  }
+  if(q.type==='multi'){
+    const userSel=(multiAnswers[id]||[]).slice().sort().join(',');
+    return userSel===q.answers.slice().sort().join(',');
+  }
+  return false;
+}
+
+function getAnswerDisplay(q,id){
+  if(q.type==='mc'){const u=allAnswers[id];return{yours:u!==undefined?`"${q.options[u]}"`:'No answer',correct:`"${q.options[q.answer]}"`};}
+  if(q.type==='tf'){const u=allAnswers[id];return{yours:u!==undefined?(u?'True':'False'):'No answer',correct:q.answer?'True':'False'};}
+  if(q.type==='fitb'){
+    const accepted=Array.isArray(q.answer)?q.answer:[q.answer];
+    const u=allAnswers[id];
+    if(Array.isArray(u))return{yours:u.some(v=>v)?u.map(v=>`"${v||'—'}"`).join(' + '):'No answer',correct:accepted.map(a=>Array.isArray(a)?`"${a[0]}"`:`"${a}"`).join(' + ')};
+    return{yours:u?`"${u}"`:'No answer',correct:`"${accepted[0]}"`};
+  }
+  if(q.type==='multi'){const sel=multiAnswers[id]||[];return{yours:sel.length>0?sel.map(i=>`"${q.options[i]}"`).join(', '):'No answer',correct:q.answers.map(i=>`"${q.options[i]}"`).join(', ')};}
+  return{yours:'N/A',correct:'N/A'};
+}
+
+// ── Submit ─────────────────────────────────────────────────────────────────
+function submitStage(stage) {
+  clearInterval(timerInterval);
+  hidePauseButton();
+  document.getElementById('timer-wrap').classList.remove('visible');
+
+  if(stage==='grammar'){
+    let sc=0;
+    grammarSections.forEach((sec,si)=>sec.questions.forEach((q,qi)=>{const id=`g_${si}_${qi}`;if(scoreQ(q,id))sc++;else{const disp=getAnswerDisplay(q,id);allErrors.grammar.push({q,id,disp,section:sec.title,color:sec.color});}}));
+    stageScores.grammar=sc; stageTotals.grammar=grammarTotalQ;
+    document.getElementById('grammar-test').style.display='none';
+    document.getElementById('pip0').classList.remove('active'); document.getElementById('pip0').classList.add('done');
+    document.getElementById('pip1').classList.add('active');
+    showStageCover('stage2-cover');
+
+  }else if(stage==='reading'){
+    let sc=0;
+    readings.forEach((r,ri)=>r.questions.forEach((q,qi)=>{const id=`r_${ri}_${qi}`;if(scoreQ(q,id))sc++;else{const disp=getAnswerDisplay(q,id);allErrors.reading.push({q,id,disp,section:`Reading ${ri+1}: ${r.title}`,color:r.color});}}));
+    stageScores.reading=sc; stageTotals.reading=readingTotalQ;
+    document.getElementById('reading-test').style.display='none';
+    document.getElementById('pip1').classList.remove('active'); document.getElementById('pip1').classList.add('done');
+    document.getElementById('pip2').classList.add('active');
+    showStageCover('stage3-cover');
+
+  }else if(stage==='vocab'){
+    let sc=0;
+    vocabQuestions.forEach((q,qi)=>{const id=`v_${qi}`;if(scoreQ(q,id))sc++;else{const disp=getAnswerDisplay(q,id);allErrors.vocab.push({q,id,disp,section:'Vocabulary',color:'#d47ab0'});}});
+    stageScores.vocab=sc; stageTotals.vocab=vocabTotalQ;
+    document.getElementById('vocab-test').style.display='none';
+    document.getElementById('pip2').classList.remove('active'); document.getElementById('pip2').classList.add('done');
+    document.getElementById('pip3').classList.add('active');
+    showStageCover('stage4-cover');
+
+  }else if(stage==='listening'){
+    let sc=0;
+    listeningVideos.forEach((v,vi)=>v.questions.forEach((q,qi)=>{const id=`l_${vi}_${qi}`;if(scoreQ(q,id))sc++;else{const disp=getAnswerDisplay(q,id);allErrors.listening.push({q,id,disp,section:v.title,color:v.color});}}));
+    stageScores.listening=sc; stageTotals.listening=listeningTotalQ;
+    document.getElementById('listening-test').style.display='none';
+    document.getElementById('pip3').classList.remove('active'); document.getElementById('pip3').classList.add('done');
+    showProcessingScreen();
+  }
+}
+
+// ── Processing ─────────────────────────────────────────────────────────────
+function showProcessingScreen() {
+  document.getElementById('processing-screen').style.display='block';
+  window.scrollTo({top:0,behavior:'smooth'});
+  const steps=[
+    {icon:'📋',title:'Processing Your Application',msg:'Reviewing your grammar performance...',delay:0},
+    {icon:'📖',title:'Analyzing Reading Skills',msg:'Evaluating your comprehension results...',delay:1600},
+    {icon:'📚',title:'Checking Vocabulary Score',msg:'Reviewing your vocabulary responses...',delay:3200},
+    {icon:'🎧',title:'Checking Listening Score',msg:'Processing your listening responses...',delay:4800},
+    {icon:'⚖️',title:'Making Hiring Decision',msg:'Reviewing your overall performance...',delay:6400},
+  ];
+  steps.forEach(step=>setTimeout(()=>{
+    document.getElementById('processing-icon').textContent=step.icon;
+    document.getElementById('processing-title').textContent=step.title;
+    document.getElementById('processing-msg').textContent=step.msg;
+  },step.delay));
+  setTimeout(()=>{document.getElementById('processing-screen').style.display='none';showResults();},8200);
+}
+
+// ── Confetti ───────────────────────────────────────────────────────────────
+function launchConfetti() {
+  const canvas=document.getElementById('confetti-canvas');
+  canvas.style.display='block'; canvas.width=window.innerWidth; canvas.height=window.innerHeight;
+  const ctx=canvas.getContext('2d');
+  const pieces=[]; const colors=['#E8541A','#4ecba5','#5fa8d3','#EF9F27','#d47ab0','#ffffff','#5db87a'];
+  for(let i=0;i<160;i++) pieces.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height-canvas.height,w:Math.random()*10+5,h:Math.random()*6+3,color:colors[Math.floor(Math.random()*colors.length)],speed:Math.random()*3+2,angle:Math.random()*Math.PI*2,spin:(Math.random()-.5)*.2,drift:(Math.random()-.5)*1.5});
+  let frame=0;
+  function draw(){ctx.clearRect(0,0,canvas.width,canvas.height);pieces.forEach(p=>{ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.angle);ctx.fillStyle=p.color;ctx.globalAlpha=Math.max(0,1-frame/180);ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);ctx.restore();p.y+=p.speed;p.x+=p.drift;p.angle+=p.spin;});frame++;if(frame<200)requestAnimationFrame(draw);else{ctx.clearRect(0,0,canvas.width,canvas.height);canvas.style.display='none';}}
+  draw();
+}
+
+function shuffleArray(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+// ── Results ────────────────────────────────────────────────────────────────
+function showResults() {
+  document.getElementById('results-area').style.display='block';
+  const elapsedMs=Date.now()-testStartTime-totalPausedMs;
+  const totalMins=Math.floor(elapsedMs/60000), remainSecs=Math.floor((elapsedMs%60000)/1000);
+  const timeStr=totalMins>0?`${totalMins} min ${remainSecs>0?remainSecs+' sec':''}`:`${remainSecs} sec`;
+  document.getElementById('res-name').innerHTML=`${studentName}'s Hiring Results &nbsp;·&nbsp; <span style="color:#7a9bbf;font-size:12px;">⏱ Completed in ${timeStr}</span>`;
+  document.getElementById('progress').style.width='100%';
+
+  const gPct=Math.round((stageScores.grammar/stageTotals.grammar)*100);
+  const rPct=Math.round((stageScores.reading/stageTotals.reading)*100);
+  const vPct=Math.round((stageScores.vocab/stageTotals.vocab)*100);
+  const lPct=Math.round((stageScores.listening/stageTotals.listening)*100);
+
+  function statusBadge(pct,threshold){
+    if(pct>=threshold)return{label:'✓ Pass',bg:'rgba(78,203,165,.15)',color:'#4ecba5'};
+    if(pct>=threshold-15)return{label:'~ Close',bg:'rgba(239,159,39,.15)',color:'#EF9F27'};
+    return{label:'✗ Needs work',bg:'rgba(232,84,26,.15)',color:'#E8541A'};
+  }
+  const gS=statusBadge(gPct,60),rS=statusBadge(rPct,65),vS=statusBadge(vPct,65),lS=statusBadge(lPct,65);
+  document.getElementById('scores-grid').innerHTML=`
+    <div class="score-card"><div class="score-label">Grammar</div><div class="score-num" style="color:${gS.color}">${gPct}%</div><div class="score-status" style="background:${gS.bg};color:${gS.color}">${gS.label}</div></div>
+    <div class="score-card"><div class="score-label">Reading</div><div class="score-num" style="color:${rS.color}">${rPct}%</div><div class="score-status" style="background:${rS.bg};color:${rS.color}">${rS.label}</div></div>
+    <div class="score-card"><div class="score-label">Vocabulary</div><div class="score-num" style="color:${vS.color}">${vPct}%</div><div class="score-status" style="background:${vS.bg};color:${vS.color}">${vS.label}</div></div>
+    <div class="score-card"><div class="score-label">Listening</div><div class="score-num" style="color:${lS.color}">${lPct}%</div><div class="score-status" style="background:${lS.bg};color:${lS.color}">${lS.label}</div></div>`;
+
+  const overallPct=Math.round((gPct+rPct+vPct+lPct)/4);
+  const gH=gPct>=60,rH=rPct>=65,vH=vPct>=65,lH=lPct>=65;
+  const weakSkills=[];
+  if(!gH)weakSkills.push('Grammar');if(!rH)weakSkills.push('Reading');if(!vH)weakSkills.push('Vocabulary');if(!lH)weakSkills.push('Listening');
+  const skillsList=weakSkills.join(' and ');
+  const verdictEl=document.getElementById('hiring-verdict');
+  let verdictHTML='';
+
+  if(gH&&rH&&vH&&lH){
+    verdictEl.style.borderColor='#4ecba5'; verdictEl.style.background='rgba(78,203,165,.06)';
+    verdictHTML=`<div class="verdict-icon">🎉</div><div class="verdict-title" style="color:#4ecba5">Congratulations — You're Hired!</div><div class="verdict-company" style="color:#c0d4e8">You have demonstrated the English level required to work at <b style="color:#4ecba5">${companyName}</b>.</div><div class="verdict-message" style="color:#c0d4e8">All four stages passed! Keep practicing to maintain and improve your level.</div>`;
+    setTimeout(launchConfetti,400);
+  } else {
+    const failCount=weakSkills.length;
+    const margins=[];
+    if(!gH)margins.push(60-gPct);if(!rH)margins.push(65-rPct);if(!vH)margins.push(65-vPct);if(!lH)margins.push(65-lPct);
+    const avgMargin=margins.reduce((a,b)=>a+b,0)/margins.length;
+    let weeks=0,verdictType='';
+    if(overallPct>=55&&failCount===1){weeks=avgMargin<=10?2:3;verdictType='conditional';}
+    else if(overallPct>=48&&failCount<=2){weeks=failCount===1?4:6;verdictType='conditional';}
+    else if(failCount===3&&overallPct>=40){weeks=8;verdictType='nothired';}
+    else{weeks=12;verdictType='nothired';}
+    const timeStr2=weeks<=4?`${weeks} weeks`:`${Math.round(weeks/4)} months`;
+
+    if(verdictType==='conditional'){
+      verdictEl.style.borderColor='#EF9F27'; verdictEl.style.background='rgba(239,159,39,.06)';
+      verdictEl.classList.add('almost-glow');
+      verdictHTML=`<div class="verdict-icon"><span class="verdict-pulse">⚠️</span></div><div class="verdict-title" style="color:#EF9F27">Almost There!</div><div class="verdict-company" style="color:#c0d4e8">To get hired at <b style="color:#EF9F27">${companyName}</b>, you will need to strengthen your <b style="color:#EF9F27">${skillsList}</b>.</div><div class="verdict-message" style="color:#c0d4e8">You are close! Keep practicing the areas listed above.</div><div class="verdict-timeline" style="color:#EF9F27">📅 Please come back in <b>${timeStr2}</b> to retry.</div>`;
+    } else {
+      verdictEl.style.borderColor='#E8541A'; verdictEl.style.background='rgba(232,84,26,.06)';
+      verdictHTML=`<div class="verdict-icon"><span class="verdict-stamp">❌</span></div><div class="verdict-title" style="color:#E8541A">Not Hired Yet</div><div class="verdict-company" style="color:#c0d4e8">To get hired at <b style="color:#E8541A">${companyName}</b>, you will need to practice your <b style="color:#E8541A">${skillsList}</b>.</div><div class="verdict-message" style="color:#c0d4e8">Do not get discouraged — keep practicing every day!</div><div class="verdict-timeline" style="color:#E8541A">📅 Please come back in <b>${timeStr2}</b> to retry.</div>`;
+      setTimeout(()=>verdictEl.classList.add('verdict-shake'),300);
+    }
+  }
+  verdictEl.innerHTML=verdictHTML;
+
+  // Breakdown
+  let bdHtml='<h3>Score by Section</h3>';
+  grammarSections.forEach((sec,si)=>{let sc=0;sec.questions.forEach((q,qi)=>{if(scoreQ(q,`g_${si}_${qi}`))sc++;});const p=Math.round((sc/sec.questions.length)*100);bdHtml+=`<div class="bd-row"><div class="bd-label">${sec.title}</div><div class="bd-bar-wrap"><div class="bd-bar" style="width:${p}%;background:${sec.color}"></div></div><div class="bd-score">${sc}/${sec.questions.length}</div></div>`;});
+  readings.forEach((r,ri)=>{let sc=0;r.questions.forEach((q,qi)=>{if(scoreQ(q,`r_${ri}_${qi}`))sc++;});const p=Math.round((sc/r.questions.length)*100);bdHtml+=`<div class="bd-row"><div class="bd-label">Reading ${ri+1}</div><div class="bd-bar-wrap"><div class="bd-bar" style="width:${p}%;background:${r.color}"></div></div><div class="bd-score">${sc}/${r.questions.length}</div></div>`;});
+  let vSc=0;vocabQuestions.forEach((q,qi)=>{if(scoreQ(q,`v_${qi}`))vSc++;});const vP=Math.round((vSc/vocabQuestions.length)*100);
+  bdHtml+=`<div class="bd-row"><div class="bd-label">Vocabulary</div><div class="bd-bar-wrap"><div class="bd-bar" style="width:${vP}%;background:#d47ab0"></div></div><div class="bd-score">${vSc}/${vocabQuestions.length}</div></div>`;
+  listeningVideos.forEach((v,vi)=>{let sc=0;v.questions.forEach((q,qi)=>{if(scoreQ(q,`l_${vi}_${qi}`))sc++;});const p=Math.round((sc/v.questions.length)*100);bdHtml+=`<div class="bd-row"><div class="bd-label">Listening ${vi+1}</div><div class="bd-bar-wrap"><div class="bd-bar" style="width:${p}%;background:${v.color}"></div></div><div class="bd-score">${sc}/${v.questions.length}</div></div>`;});
+  document.getElementById('breakdown').innerHTML=bdHtml;
+
+  // Weak areas
+  const weakSec=[];
+  grammarSections.forEach((sec,si)=>{let sc=0;sec.questions.forEach((q,qi)=>{if(scoreQ(q,`g_${si}_${qi}`))sc++;});const p=Math.round((sc/sec.questions.length)*100);if(p<60)weakSec.push({title:sec.title,pct:p,sc,total:sec.questions.length});});
+  let weakHtml='<h3>⚠️ Areas to Review</h3>';
+  if(weakSec.length===0&&gH&&rH&&vH&&lH){weakHtml+='<div class="weak-item"><div class="weak-icon">🎉</div><div class="weak-text">You scored above the minimum in all areas. Great job!</div></div>';}
+  else{
+    weakSec.forEach(s=>{weakHtml+=`<div class="weak-item"><div class="weak-icon">📌</div><div class="weak-text"><b>${s.title}</b> — ${s.sc}/${s.total} (${s.pct}%). ${getWeakTip(s.title)}</div></div>`;});
+    if(!rH)weakHtml+='<div class="weak-item"><div class="weak-icon">📌</div><div class="weak-text"><b>Reading</b> — Practice reading English articles every day and focus on new vocabulary.</div></div>';
+    if(!vH)weakHtml+='<div class="weak-item"><div class="weak-icon">📌</div><div class="weak-text"><b>Vocabulary</b> — Practice professional synonyms daily. Replace simple words with more sophisticated alternatives in your conversations.</div></div>';
+    if(!lH)weakHtml+='<div class="weak-item"><div class="weak-icon">📌</div><div class="weak-text"><b>Listening</b> — Watch English content daily. Start with subtitles and gradually reduce them.</div></div>';
+  }
+  document.getElementById('weak-areas').innerHTML=weakHtml;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function getWeakTip(t){const tips={'Simple Present':'Review affirmative, negative, and question forms. He/she/it adds -s.','Present Progressive':'Practice am/is/are + verb+ing for actions happening now.','Simple Past':'Focus on irregular verbs and did/did not for questions and negatives.','Past Progressive':'Review was/were + verb+ing with when and while.','Future — Will':'Will is for spontaneous decisions, promises, and predictions.','Future — Going to':'Practice am/is/are + going to for pre-planned intentions.','Present Perfect':'Focus on have/has + past participle with already, yet, ever, since, for.','Present Perfect Progressive':'Review have/has + been + verb+ing for ongoing actions.','Modal Verbs':'Study the difference between should, must, had better, could, would, might, and may.','Second Conditional':'If + past tense + would + base verb for hypothetical situations.','Comparatives':'-er + than for short adjectives, more + adjective + than for long ones.','Superlatives':'the + -est for short adjectives, the most + adjective for long ones.'};return tips[t]||'Review this topic in the Grammar Refresh tab.';}
+
+// ── Review mode ────────────────────────────────────────────────────────────
+function backToResults(){document.getElementById('review-area').style.display='none';document.getElementById('results-area').style.display='block';window.scrollTo({top:0,behavior:'smooth'});}
+
+function showReviewMode(){
+  document.getElementById('results-area').style.display='none';
+  document.getElementById('review-area').style.display='block';
+  window.scrollTo({top:0,behavior:'smooth'});
+  let html='',qIdx=0;
+
+  grammarSections.forEach((sec,si)=>{
+    html+=`<div class="review-section-header" style="border-left-color:${sec.color}"><div class="review-section-tag" style="color:${sec.color}">${sec.tag} — Grammar</div><div class="review-section-title">${sec.title}</div></div>`;
+    sec.questions.forEach((q,qi)=>{qIdx++;html+=renderReviewQ(q,`g_${si}_${qi}`,qIdx);});
+  });
+  readings.forEach((r,ri)=>{
+    html+=`<div class="review-section-header" style="border-left-color:${r.color}"><div class="review-section-tag" style="color:${r.color}">Reading ${ri+1}</div><div class="review-section-title">${r.title}</div></div>`;
+    r.questions.forEach((q,qi)=>{qIdx++;html+=renderReviewQ(q,`r_${ri}_${qi}`,qIdx);});
+  });
+  html+=`<div class="review-section-header" style="border-left-color:#d47ab0"><div class="review-section-tag" style="color:#d47ab0">Stage 3</div><div class="review-section-title">Vocabulary</div></div>`;
+  vocabQuestions.forEach((q,qi)=>{qIdx++;html+=renderReviewQ(q,`v_${qi}`,qIdx);});
+  listeningVideos.forEach((v,vi)=>{
+    html+=`<div class="review-section-header" style="border-left-color:${v.color}"><div class="review-section-tag" style="color:${v.color}">Listening ${vi+1}</div><div class="review-section-title">${v.title}</div></div>`;
+    v.questions.forEach((q,qi)=>{qIdx++;html+=renderReviewQ(q,`l_${vi}_${qi}`,qIdx);});
+  });
+  document.getElementById('review-content').innerHTML=html;
+}
+
+function renderReviewQ(q,id,num){
+  const isCorrect=scoreQ(q,id);
+  const cardClass=isCorrect?'correct':'incorrect';
+  const badge=isCorrect?'<span class="rq-badge badge-correct">✓ Correct</span>':'<span class="rq-badge badge-incorrect">✗ Incorrect</span>';
+  let body='';
+
+  if(q.type==='fitb'){
+    const accepted=Array.isArray(q.answer)?q.answer:[q.answer];
+    const userVal=allAnswers[id];
+    let displayText=q.text
+      .replace(/\((Do not use contractions[^)]*|Present Perfect[^)]*|Past Progressive[^)]*|Second Conditional[^)]*|Present Perfect Progressive[^)]*|Simple Present[^)]*)\)/g,'<span style="font-size:11px;color:#EF9F27;font-style:italic;">($1)</span>')
+      .replace(/\(([^)]+)\)(?!<\/span>)/g,'<span style="font-size:12px;color:#4ecba5;font-weight:600;">($1)</span>');
+    let blankIdx=0;
+    if(Array.isArray(userVal)){
+      displayText=displayText.replace(/_____/g,()=>{
+        const val=userVal[blankIdx]||'—';
+        const raw=accepted[blankIdx];
+        const correct=Array.isArray(raw)?raw:[String(raw)];
+        const ok=correct.some(a=>val.toLowerCase().trim()===a.toLowerCase().trim());
+        blankIdx++;
+        const color=ok?'#4ecba5':'#E8541A';const bg=ok?'rgba(78,203,165,.15)':'rgba(232,84,26,.15)';
+        return `<span style="display:inline-block;padding:2px 10px;border-radius:6px;background:${bg};color:${color};font-weight:700;border-bottom:2px solid ${color};">${val}</span>`;
+      });
+    } else {
+      displayText=displayText.replace(/_____/g,()=>{const val=userVal||'—';const color=isCorrect?'#4ecba5':'#E8541A';const bg=isCorrect?'rgba(78,203,165,.15)':'rgba(232,84,26,.15)';return `<span style="display:inline-block;padding:2px 10px;border-radius:6px;background:${bg};color:${color};font-weight:700;border-bottom:2px solid ${color};">${val}</span>`;});
+    }
+    body+=`<div class="rq-text" style="line-height:2.4;">${displayText}</div>`;
+    if(!isCorrect){const correctDisplay=accepted.map(a=>Array.isArray(a)?a[0]:a).join(' + ');body+=`<div class="review-why"><b>Correct answer:</b> ${correctDisplay}</div>`;}
+  } else if(q.type==='mc'){
+    const userIdx=allAnswers[id];
+    body+=`<div class="rq-text">${q.text}</div>`;
+    q.options.forEach((opt,oi)=>{let cls='opt-neutral',icon='';if(oi===q.answer){cls='opt-correct';icon='✓ ';}else if(oi===userIdx&&userIdx!==q.answer){cls='opt-wrong';icon='✗ ';}body+=`<div class="review-opt ${cls}">${icon}${opt}</div>`;});
+    if(!isCorrect)body+=`<div class="review-why"><b>Why:</b> Review this topic in the Grammar Refresh tab.</div>`;
+  } else if(q.type==='tf'){
+    const userVal=allAnswers[id];
+    body+=`<div class="rq-text">${q.text}</div>`;
+    const tC=q.answer===true?'opt-correct':(userVal===true&&!isCorrect?'opt-wrong':'opt-neutral');
+    const fC=q.answer===false?'opt-correct':(userVal===false&&!isCorrect?'opt-wrong':'opt-neutral');
+    const tI=q.answer===true?'✓ ':(userVal===true&&!isCorrect?'✗ ':'');
+    const fI=q.answer===false?'✓ ':(userVal===false&&!isCorrect?'✗ ':'');
+    body+=`<div style="display:flex;gap:8px;"><div class="review-opt ${tC}" style="flex:1;">${tI}True</div><div class="review-opt ${fC}" style="flex:1;">${fI}False</div></div>`;
+    if(!isCorrect)body+=`<div class="review-why"><b>Correct answer:</b> ${q.answer?'True':'False'}</div>`;
+  } else if(q.type==='multi'){
+    const userSel=multiAnswers[id]||[];
+    body+=`<div class="rq-text">${q.text}</div>`;
+    q.options.forEach((opt,oi)=>{const ok=q.answers.includes(oi);const sel=userSel.includes(oi);let cls='opt-neutral',icon='';if(ok){cls='opt-correct';icon='✓ ';}else if(sel&&!ok){cls='opt-wrong';icon='✗ ';}body+=`<div class="review-opt ${cls}">${icon}${opt}</div>`;});
+    if(!isCorrect)body+=`<div class="review-why"><b>Why:</b> Every correct option must be selected and no incorrect ones chosen.</div>`;
+  }
+
+  return `<div class="review-card ${cardClass}"><div class="rq-header"><span class="rq-num">Question ${num}</span>${badge}</div>${body}</div>`;
+}
+
+function hexToRgb(hex){return `${parseInt(hex.slice(1,3),16)},${parseInt(hex.slice(3,5),16)},${parseInt(hex.slice(5,7),16)}`;}
+</script>
+</body>
+</html>
